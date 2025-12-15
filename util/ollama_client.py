@@ -1,4 +1,5 @@
 import ollama
+import requests
 
 # Configure your server URL here
 SERVER_HOST = 'http://ollama.cs.wallawalla.edu:11434'
@@ -74,6 +75,38 @@ def stream_ollama(prompt, model="cs450", **options):
     
     except Exception as e:
         yield f"Error: {e}"
+
+def analyze_image(image_url, prompt, model="gemma3", temperature=0.3):
+    """
+    Analyze an image from a URL with a text prompt.
+    
+    Args:
+        image_url: URL of the image
+        prompt: Question or instruction about the image
+        model: Vision model to use
+        temperature: Randomness (0.0-1.0)
+    """
+
+    # Add User-Agent header to avoid 403 errors
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    }
+
+    # Download image from URL
+    response = requests.get(image_url, headers=headers)
+    response.raise_for_status()
+    
+    # Pass image bytes directly
+    response = client.chat(
+        model=model,
+        messages=[{
+            'role': 'user',
+            'content': prompt,
+            'images': [response.content]  # Pass bytes directly
+        }],
+        options={'temperature': temperature}
+    )
+    return response['message']['content']
 
 # Test the function
 if __name__ == "__main__":

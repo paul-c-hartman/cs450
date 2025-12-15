@@ -1,6 +1,6 @@
-from .ollama_client import call_ollama, stream_ollama, chat_ollama
+from .ollama_client import call_ollama, stream_ollama, chat_ollama, analyze_image
 
-__all__ = ['call_ollama', 'stream_ollama', 'chat_ollama']
+__all__ = ['call_ollama', 'stream_ollama', 'chat_ollama', 'analyze_image']
 
 package_version = "1.0.0"
 
